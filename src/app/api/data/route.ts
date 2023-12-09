@@ -13,6 +13,7 @@ export async function GET() {
       lastName: faker.person.lastName(),
       email: faker.internet.email(),
       jobTitle: faker.person.jobTitle(),
+      age: faker.number.int({ min: 18, max: 65 }),
     };
   });
 
