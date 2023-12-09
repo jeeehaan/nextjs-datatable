@@ -1,5 +1,12 @@
-'use client';
+import { TableComponent } from '@/components/table';
 
-export default function Page() {
-  return <div>Hello!</div>;
+async function getData() {
+  const res = await fetch('http://localhost:3000/api/data');
+  const data = await res.json();
+  return data;
+}
+export default async function Page() {
+  const data = await getData();
+  // console.log(data);
+  return <TableComponent initialData={data} />;
 }
