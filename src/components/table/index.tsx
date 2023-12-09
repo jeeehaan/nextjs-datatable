@@ -58,35 +58,51 @@ export const TableComponent: React.FC<TableComponentProps> = ({ initialData }) =
   if (!isClient) return null;
 
   return (
-    <Table>
-      {table.getHeaderGroups().map((headerGroup) => {
-        return (
-          <TableHeader key={headerGroup.id}>
-            {headerGroup.headers.map((column) => {
-              return (
-                <TableHead key={column.id}>
-                  {flexRender(column.column.columnDef.header, column.getContext())}
-                </TableHead>
-              );
-            })}
-          </TableHeader>
-        );
-      })}
-      <TableBody>
-        {table.getRowModel().rows.map((row) => {
+    <div>
+      <div>
+        {table.getAllColumns().map((column) => {
           return (
-            <TableRow key={row.id}>
-              {row.getVisibleCells().map((cell) => {
-                return (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                );
-              })}
-            </TableRow>
+            <input
+              key={column.id}
+              {...{
+                type: 'checkbox',
+                checked: column.getIsVisible(),
+                onChange: column.getToggleVisibilityHandler(),
+              }}
+            />
           );
         })}
-      </TableBody>
-    </Table>
+      </div>
+      <Table>
+        {table.getHeaderGroups().map((headerGroup) => {
+          return (
+            <TableHeader key={headerGroup.id}>
+              {headerGroup.headers.map((column) => {
+                return (
+                  <TableHead key={column.id}>
+                    {flexRender(column.column.columnDef.header, column.getContext())}
+                  </TableHead>
+                );
+              })}
+            </TableHeader>
+          );
+        })}
+        <TableBody>
+          {table.getRowModel().rows.map((row) => {
+            return (
+              <TableRow key={row.id}>
+                {row.getVisibleCells().map((cell) => {
+                  return (
+                    <TableCell key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </div>
   );
 };
