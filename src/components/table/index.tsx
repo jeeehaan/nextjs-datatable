@@ -9,11 +9,13 @@ import {
   SortingState,
   flexRender,
   getFilteredRowModel,
+  getPaginationRowModel,
 } from '@tanstack/react-table';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import { useDebounce } from 'use-debounce';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 import { Input } from '../ui/input';
+import { Button } from '../ui/button';
 
 interface User {
   id: number;
@@ -72,6 +74,9 @@ export const TableComponent: React.FC<TableComponentProps> = ({ initialData }) =
         jobTitle: true,
         age: true,
       },
+      pagination: {
+        pageSize: 10,
+      },
     },
     data,
     columns,
@@ -80,6 +85,7 @@ export const TableComponent: React.FC<TableComponentProps> = ({ initialData }) =
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
   });
 
   useEffect(() => {
@@ -147,6 +153,22 @@ export const TableComponent: React.FC<TableComponentProps> = ({ initialData }) =
           })}
         </TableBody>
       </Table>
+      <div>
+        <Button onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
+          {'<'}
+        </Button>
+        <Button onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+          {'>'}
+        </Button>
+      </div>
+      <div>
+        <select onChange={(e) => table.setPageSize(Number(e.target.value))}>
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="25">25</option>
+          <option value={data.length}>All</option>
+        </select>
+      </div>
     </div>
   );
 };
