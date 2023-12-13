@@ -29,6 +29,31 @@ interface User {
 const columnHelper = createColumnHelper<User>();
 
 const columns = [
+  columnHelper.accessor('id', {
+    header: ({ table }) => {
+      return (
+        <input
+          {...{
+            type: 'checkbox',
+            checked: table.getIsAllRowsSelected(),
+            onChange: table.getToggleAllRowsSelectedHandler(),
+          }}
+        />
+      );
+    },
+    cell: ({ row }) => {
+      return (
+        <input
+          {...{
+            type: 'checkbox',
+            checked: row.getIsSelected(),
+            onChange: row.getToggleSelectedHandler(),
+          }}
+        />
+      );
+    },
+  }),
+
   columnHelper.accessor('firstName', {
     header: 'First Name',
     cell: (data) => <div>{data.getValue()}</div>,
@@ -124,7 +149,13 @@ export const TableComponent: React.FC<TableComponentProps> = ({ initialData }) =
                   <TableHead
                     className="cursor-pointer hover:bg-zinc-100"
                     key={column.id}
-                    onClick={() => column.column.toggleSorting()}
+                    onClick={() => {
+                      if (column.id === 'id') {
+                        // do nothing
+                      } else {
+                        column.column.toggleSorting();
+                      }
+                    }}
                   >
                     <div className="flex items-center justify-between">
                       <div>{flexRender(column.column.columnDef.header, column.getContext())}</div>
