@@ -8,9 +8,12 @@ import {
   getSortedRowModel,
   SortingState,
   flexRender,
+  getFilteredRowModel,
 } from '@tanstack/react-table';
 import { ArrowDown, ArrowUp } from 'lucide-react';
+import { useDebounce } from 'use-debounce';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
+import { Input } from '../ui/input';
 
 interface User {
   id: number;
@@ -53,10 +56,13 @@ export const TableComponent: React.FC<TableComponentProps> = ({ initialData }) =
   const [isClient, setIsClient] = useState(false);
   const [data] = useState(initialData);
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [globalFilter, setGlobalFilter] = useState<string>('');
+  const [debouncedGlobalFilter] = useDebounce(globalFilter, 1000);
 
   const table = useReactTable({
     state: {
       sorting,
+      globalFilter: debouncedGlobalFilter,
     },
     initialState: {
       columnVisibility: {
@@ -69,9 +75,11 @@ export const TableComponent: React.FC<TableComponentProps> = ({ initialData }) =
     },
     data,
     columns,
+    onGlobalFilterChange: setGlobalFilter,
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
   });
 
   useEffect(() => {
@@ -83,6 +91,7 @@ export const TableComponent: React.FC<TableComponentProps> = ({ initialData }) =
   return (
     <div>
       {/* <pre>{JSON.stringify(sorting, null, 2)}</pre> */}
+      <Input value={globalFilter} onChange={(e) => setGlobalFilter(e.target.value)} />
       <div>
         {table.getAllColumns().map((column) => {
           return (
